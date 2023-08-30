@@ -28,7 +28,7 @@ def inference(audio, lang):
         text = w.extract_text(result)
     return text[0]
 
-st.title("Transcribe")
+st.title("TranscribeApp")
 language = st.selectbox('Language', language_list, index=23)
 lang = to_language_code_dict[language.lower()]
 precision = st.toggle("Higher precision (slower)")
