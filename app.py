@@ -31,8 +31,15 @@ precision = st.toggle("Higher precision (slower)")
 
 w = load_model(precision)
 audio = audiorecorder("Click to record", "Recording... Click when you're done", key="recorder")
+cleared = st.button("Clear")
 
-if len(audio)>0:
-    text = inference(audio, lang)
+with open("hello.txt", "a") as f:
+    if len(audio)>0:
+        f.write(inference(audio, lang))
+if cleared:
+    with open("hello.txt", "w") as f:
+        f.write("")
+with open("hello.txt", "r") as fout:
+    text = fout.read()
     text = st.text_area('Transcription', text)
     st.code(text, language="markdown")
