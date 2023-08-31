@@ -3,10 +3,8 @@ import whisper
 from whispercpp import Whisper
 from audiorecorder import audiorecorder
 from tempfile import NamedTemporaryFile
-
 from streamlit.runtime.scriptrunner import add_script_run_ctx
 session_id = add_script_run_ctx().streamlit_script_run_ctx.session_id
-st.write(session_id)
 
 to_language_code_dict = whisper.tokenizer.TO_LANGUAGE_CODE
 to_language_code_dict["automatic"] = "auto"
@@ -24,7 +22,7 @@ def inference(audio, lang):
     with NamedTemporaryFile(suffix=".mp3") as temp: # Save audio to a temporary file
         with open(f"{temp.name}", "wb") as f:
             f.write(audio.tobytes())
-        result = w.transcribe(f"{temp.name}")
+        result = w.transcribe(f"{temp.name}", lang=lang)
         text = w.extract_text(result)
     return text[0]
 
