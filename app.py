@@ -38,4 +38,5 @@ audio = audiorecorder("Click to record", "Recording... Click when you're done", 
 
 if len(audio)>0:
     text = inference(audio, lang)
+    text = st.text_area('Transcription', text)
     st.code(text, language="markdown")
