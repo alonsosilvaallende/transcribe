@@ -13,18 +13,14 @@ language_list = ["Automatic"] + language_list
 
 @st.cache_resource  # caching whispercpp model
 def load_model(precision):
-    if precision == True:
-        model = Whisper('base')
-    else:
-        model = Whisper('tiny')
+    model = Whisper('base') if precision == True else Whisper('tiny')
     return model
 
 def inference(audio, lang):
-    # Save audio to a temporary file:
-    with NamedTemporaryFile(suffix=".mp3") as temp:
+    with NamedTemporaryFile(suffix=".mp3") as temp: # Save audio to a temporary file
         with open(f"{temp.name}", "wb") as f:
             f.write(audio.tobytes())
-        result = w.transcribe(f"{temp.name}", lang=lang)
+        result = w.transcribe(f"{temp.name}")
         text = w.extract_text(result)
     return text[0]
 
