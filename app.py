@@ -4,6 +4,10 @@ from whispercpp import Whisper
 from audiorecorder import audiorecorder
 from tempfile import NamedTemporaryFile
 
+from streamlit.runtime.scriptrunner import add_script_run_ctx
+session_id = add_script_run_ctx().streamlit_script_run_ctx.session_id
+st.write(session_id)
+
 to_language_code_dict = whisper.tokenizer.TO_LANGUAGE_CODE
 to_language_code_dict["automatic"] = "auto"
 language_list = list(to_language_code_dict.keys())
@@ -33,13 +37,13 @@ w = load_model(precision)
 audio = audiorecorder("Click to record", "Recording... Click when you're done", key="recorder")
 cleared = st.button("Clear")
 
-with open("hello.txt", "a") as f:
+with open(f"hello-{session_id}.txt", "a") as f:
     if len(audio)>0:
         f.write(inference(audio, lang))
 if cleared:
-    with open("hello.txt", "w") as f:
+    with open(f"hello-{session_id}.txt", "w") as f:
         f.write("")
-with open("hello.txt", "r") as fout:
+with open(f"hello-{session_id}.txt", "r") as fout:
     text = fout.read()
     text = st.text_area('Transcription', text)
     st.code(text, language="markdown")
