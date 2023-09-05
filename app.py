@@ -3,25 +3,6 @@ import whisper
 from whispercpp import Whisper
 from audiorecorder import audiorecorder
 from tempfile import NamedTemporaryFile
-from streamlit.runtime.scriptrunner import add_script_run_ctx
-session_id = add_script_run_ctx().streamlit_script_run_ctx.session_id
-
-#######
-#from dotenv import load_dotenv, find_dotenv
-#load_dotenv(find_dotenv())
-#######
-#import os
-#import openai
-#st.write(openai.api_key)
-#from langsmith import Client
-
-#client = Client()
-
-# Initialize State
-#if "trace_link" not in st.session_state:
-#    st.session_state.trace_link = None
-#if "run_id" not in st.session_state:
-#    st.session_state.run_id = None
 
 to_language_code_dict = whisper.tokenizer.TO_LANGUAGE_CODE
 to_language_code_dict["automatic"] = "auto"
@@ -36,8 +17,6 @@ def load_model(precision):
         model = Whisper('tiny')
     elif precision == "Medium":
         model = Whisper('base')
-    elif precision == "High (slowest)":
-        model = Whisper('small')
     else:
         model = Whisper('small')
     return model
@@ -53,20 +32,12 @@ def inference(audio, lang):
 st.title("TranscribeApp")
 language = st.selectbox('Language', language_list, index=23)
 lang = to_language_code_dict[language.lower()]
-#precision = st.toggle("Higher precision (slower)")
 precision = st.selectbox("Precision", ["Low (fastest)", "Medium", "High (slowest)"])
 
 w = load_model(precision)
 audio = audiorecorder("Click to record", "Recording... Click when you're done", key="recorder")
-cleared = st.button("Clear")
 
-with open(f"hello-{session_id}.txt", "a") as f:
-    if len(audio)>0:
-        f.write(inference(audio, lang))
-if cleared:
-    with open(f"hello-{session_id}.txt", "w") as f:
-        f.write("")
-with open(f"hello-{session_id}.txt", "r") as fout:
-    text = fout.read()
+if len(audio)>0:
+    text = inference(audio, lang)
     text = st.text_area('Transcription', text)
     st.code(text, language="markdown")
