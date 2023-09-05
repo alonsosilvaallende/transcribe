@@ -39,7 +39,7 @@ def load_model(precision):
     elif precision == "High (slowest)":
         model = Whisper('small')
     else:
-        model = Whisper('medium')
+        model = Whisper('small')
     return model
 
 def inference(audio, lang):
@@ -54,7 +54,7 @@ st.title("TranscribeApp")
 language = st.selectbox('Language', language_list, index=23)
 lang = to_language_code_dict[language.lower()]
 #precision = st.toggle("Higher precision (slower)")
-precision = st.selectbox("Precision", ["Low (fastest)", "Medium", "High (slowest)", "Highest"])
+precision = st.selectbox("Precision", ["Low (fastest)", "Medium", "High (slowest)"])
 
 w = load_model(precision)
 audio = audiorecorder("Click to record", "Recording... Click when you're done", key="recorder")
