@@ -6,6 +6,23 @@ from tempfile import NamedTemporaryFile
 from streamlit.runtime.scriptrunner import add_script_run_ctx
 session_id = add_script_run_ctx().streamlit_script_run_ctx.session_id
 
+#######
+#from dotenv import load_dotenv, find_dotenv
+#load_dotenv(find_dotenv())
+#######
+#import os
+#import openai
+#st.write(openai.api_key)
+#from langsmith import Client
+
+#client = Client()
+
+# Initialize State
+#if "trace_link" not in st.session_state:
+#    st.session_state.trace_link = None
+#if "run_id" not in st.session_state:
+#    st.session_state.run_id = None
+
 to_language_code_dict = whisper.tokenizer.TO_LANGUAGE_CODE
 to_language_code_dict["automatic"] = "auto"
 language_list = list(to_language_code_dict.keys())
@@ -15,7 +32,12 @@ language_list = ["Automatic"] + language_list
 
 @st.cache_resource  # caching whispercpp model
 def load_model(precision):
-    model = Whisper('base') if precision == True else Whisper('tiny')
+    if precision == "Low (fastest)":
+        model = Whisper('tiny')
+    elif precision == "Medium":
+        model = Whisper('base')
+    else:
+        model = Whisper('small')
     return model
 
 def inference(audio, lang):
@@ -29,7 +51,8 @@ def inference(audio, lang):
 st.title("TranscribeApp")
 language = st.selectbox('Language', language_list, index=23)
 lang = to_language_code_dict[language.lower()]
-precision = st.toggle("Higher precision (slower)")
+#precision = st.toggle("Higher precision (slower)")
+precision = st.selectbox("Precision", ["Low (fastest)", "Medium", "High (slowest)"])
 
 w = load_model(precision)
 audio = audiorecorder("Click to record", "Recording... Click when you're done", key="recorder")
