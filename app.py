@@ -24,7 +24,7 @@ def load_model(precision):
 def inference(audio, lang):
     with NamedTemporaryFile(suffix=".mp3") as temp: # Save audio to a temporary file
         with open(f"{temp.name}", "wb") as f:
-            f.write(audio.tobytes())
+            f.write(audio.export().read())
         result = w.transcribe(f"{temp.name}", lang=lang)
         text = w.extract_text(result)
     return text[0]
